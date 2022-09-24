@@ -32,6 +32,13 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
+    @property
+    def rabbitmq_uri(self):
+        return (
+            f"amqp://{self.rabbit.user}:{self.rabbit.password}@"
+            f"{self.rabbit.host}:{self.rabbit.port}/{self.rabbit.vhost}"
+        )
+
 
 @lru_cache()
 def get_settings() -> Settings:
