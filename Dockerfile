@@ -21,6 +21,5 @@ RUN . /venv/bin/activate && poetry install
 FROM python:3.10.7-alpine3.15
 COPY --from=builder /venv /venv
 COPY --from=builder /src /src
-COPY start.sh ./
 ENV PATH="/venv/bin:$PATH"
 CMD ["python", "/src/main.py"]
