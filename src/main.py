@@ -35,7 +35,7 @@ async def main() -> None:
     queue_name = settings.rabbit.input_queue_name
 
     async with connection:
-        rdbc = redis.Redis()
+        rdbc = redis.Redis(host=settings.redis.host, port=settings.redis.port)
         channel = await connection.channel()
 
         await channel.set_qos(prefetch_count=10)
