@@ -1,15 +1,14 @@
 import asyncio
 import json
 import logging
-from datetime import timedelta
 
 import aio_pika
 from aio_pika.abc import AbstractRobustChannel, AbstractMessage
 import redis
-from redis import Redis
 
 from config import get_settings
 from models import Question
+from utils import save_if_new
 
 settings = get_settings()
 
@@ -19,13 +18,6 @@ async def my_publish(channel: AbstractRobustChannel, message_in: AbstractMessage
     exchange_name = settings.rabbit.output_exchange_name
     exchange = await channel.get_exchange(exchange_name)
     await exchange.publish(message_in, routing_key=routing_key)
-
-
-def save_if_new(rdbc: Redis, question_id: int) -> bool:
-    if rdbc.get(str(question_id)):
-        return True
-    rdbc.set(str(question_id), str(question_id), timedelta(hours=1))
-    return False
 
 
 async def main() -> None:
